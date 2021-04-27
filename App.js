@@ -1,5 +1,17 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Button } from 'react-native';
+import Svg, { Path } from 'react-native-svg';
+
+const svgPaths = {
+	diagonal1: 'M0 0l600 600',
+	diagonal2: 'M0 300L300 0',
+	row0: 'M0 50h300',
+	row1: 'M0 150h300',
+	row2: 'M0 250h300',
+	col0: 'M50 0v300',
+	col1: 'M150 0v300',
+	col2: 'M250 0v300',
+};
 
 export default function App() {
 	const [gameState, setGameState] = useState([
@@ -10,6 +22,7 @@ export default function App() {
 	const [count, setCount] = useState(0);
 	const [currentPlayer, setCurrentPlayer] = useState(1);
 	const [winner, setWinner] = useState(0);
+	const [makeSvg, setSvg] = useState(false);
 
 	const renderIcon = (row, col) => {
 		var value = gameState[row][col];
@@ -72,6 +85,7 @@ export default function App() {
 		setCurrentPlayer(1);
 		setWinner(0);
 		setCount(0);
+		setSvg(false);
 	};
 
 	const onTilePress = (row, col) => {
@@ -98,6 +112,9 @@ export default function App() {
 		// check row
 		for (var i = 0; i < 3; i++) {
 			sum = arr[i][0] + arr[i][1] + arr[i][2];
+			if (sum === 3 || sum === -3) {
+				setSvg(svgPaths[`row${i}`]);
+			}
 			if (sum === 3) return 1;
 			else if (sum === -3) return -1;
 		}
@@ -105,17 +122,26 @@ export default function App() {
 		// check column
 		for (var i = 0; i < 3; i++) {
 			sum = arr[0][i] + arr[1][i] + arr[2][i];
+			if (sum === 3 || sum === -3) {
+				setSvg(svgPaths[`col${i}`]);
+			}
 			if (sum === 3) return 1;
 			else if (sum === -3) return -1;
 		}
 
 		// check first diagonal
 		sum = arr[0][0] + arr[1][1] + arr[2][2];
+		if (sum === 3 || sum === -3) {
+			setSvg(svgPaths['diagonal1']);
+		}
 		if (sum === 3) return 1;
 		else if (sum === -3) return -1;
 
 		// check second diagonal
 		sum = arr[0][2] + arr[1][1] + arr[2][0];
+		if (sum === 3 || sum === -3) {
+			setSvg(svgPaths['diagonal2']);
+		}
 		if (sum === 3) return 1;
 		else if (sum === -3) return -1;
 
@@ -198,6 +224,20 @@ export default function App() {
 					{renderIcon(2, 2)}
 				</TouchableOpacity>
 			</View>
+			{makeSvg && (
+				<View
+					style={{
+						position: 'absolute',
+						flex: 1,
+						justifyContent: 'center',
+						alignItems: 'center',
+					}}
+				>
+					<Svg height={300} width={300}>
+						<Path stroke="grey" strokeWidth={1} d={makeSvg} />
+					</Svg>
+				</View>
+			)}
 			{winner ? showWinner() : playerTurn()}
 			<View style={styles.buttonView}>
 				<Button title="New Game" onPress={startGame}></Button>
