@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Button } from 'react-native';
-import Svg, { Path } from 'react-native-svg';
+import Svg, { Path, Circle } from 'react-native-svg';
 
 const svgPaths = {
 	diagonal1: 'M0 0l600 600',
@@ -30,7 +30,18 @@ export default function App() {
 			case 1:
 				return <Text style={styles.tileX}>X</Text>;
 			case -1:
-				return <Text style={styles.tileO}>O</Text>;
+				return (
+					<Svg height={100} width={100}>
+						<Circle
+							cx={50}
+							cy={50}
+							r={25}
+							stroke="green"
+							strokeWidth={3}
+							fill="#fff0"
+						/>
+					</Svg>
+				);
 			default:
 				return <View />;
 		}
@@ -234,7 +245,7 @@ export default function App() {
 					}}
 				>
 					<Svg height={300} width={300}>
-						<Path stroke="grey" strokeWidth={1} d={makeSvg} />
+						<Path stroke="grey" strokeWidth={3} d={makeSvg} />
 					</Svg>
 				</View>
 			)}
@@ -269,10 +280,6 @@ const styles = StyleSheet.create({
 	},
 	tileX: {
 		color: 'red',
-		fontSize: 60,
-	},
-	tileO: {
-		color: 'green',
 		fontSize: 60,
 	},
 	playerChance: {
