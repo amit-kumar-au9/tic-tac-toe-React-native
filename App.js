@@ -1,12 +1,5 @@
 import React, { useState } from 'react';
-import {
-	StyleSheet,
-	Text,
-	View,
-	TouchableOpacity,
-	Alert,
-	Button,
-} from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Button } from 'react-native';
 
 export default function App() {
 	const [gameState, setGameState] = useState([
@@ -14,7 +7,9 @@ export default function App() {
 		[0, 0, 0],
 		[0, 0, 0],
 	]);
+	const [count, setCount] = useState(0);
 	const [currentPlayer, setCurrentPlayer] = useState(1);
+	const [winner, setWinner] = useState(0);
 
 	const renderIcon = (row, col) => {
 		var value = gameState[row][col];
@@ -39,11 +34,32 @@ export default function App() {
 			case -1:
 				return (
 					<Text style={styles.playerChance}>
-						Chance of <Text style={{ color: 'green' }}>0</Text>
+						Chance of <Text style={{ color: 'green' }}>O</Text>
 					</Text>
 				);
 			default:
 				return <View />;
+		}
+	};
+
+	const showWinner = () => {
+		switch (winner) {
+			case 1:
+				return (
+					<Text style={styles.playerChance}>
+						Player <Text style={{ color: 'red' }}>X</Text> is the
+						winner
+					</Text>
+				);
+			case -1:
+				return (
+					<Text style={styles.playerChance}>
+						Player <Text style={{ color: 'green' }}>O</Text> is the
+						winner
+					</Text>
+				);
+			default:
+				return <Text style={styles.playerChance}>Match Draw</Text>;
 		}
 	};
 
@@ -54,10 +70,15 @@ export default function App() {
 			[0, 0, 0],
 		]);
 		setCurrentPlayer(1);
+		setWinner(0);
+		setCount(0);
 	};
 
 	const onTilePress = (row, col) => {
 		if (gameState[row][col] !== 0) return;
+		if (winner !== 0) return;
+		let curr_count = count + 1;
+		setCount(curr_count);
 		// setting up the tile
 		let newGameState = gameState.slice();
 		newGameState[row][col] = currentPlayer;
@@ -66,14 +87,9 @@ export default function App() {
 		// switching up the player
 		let nextPlayer = currentPlayer === 1 ? -1 : 1;
 		setCurrentPlayer(nextPlayer);
-		let winner = getWinner(newGameState);
-		if (winner === 1) {
-			Alert.alert('Player X is the winner');
-			startGame();
-		} else if (winner === -1) {
-			Alert.alert('Player O is the winner');
-			startGame();
-		}
+		let result_winner = getWinner(newGameState);
+		if (result_winner !== 0) setWinner(result_winner);
+		else if (curr_count === 9) setWinner('Draw');
 	};
 
 	const getWinner = (arr) => {
@@ -182,7 +198,7 @@ export default function App() {
 					{renderIcon(2, 2)}
 				</TouchableOpacity>
 			</View>
-			{playerTurn()}
+			{winner ? showWinner() : playerTurn()}
 			<View style={styles.buttonView}>
 				<Button title="New Game" onPress={startGame}></Button>
 			</View>
