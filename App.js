@@ -78,22 +78,26 @@ export default function App() {
 
 	const getWinner = (arr) => {
 		var sum;
+
 		// check row
 		for (var i = 0; i < 3; i++) {
 			sum = arr[i][0] + arr[i][1] + arr[i][2];
 			if (sum === 3) return 1;
 			else if (sum === -3) return -1;
 		}
+
 		// check column
 		for (var i = 0; i < 3; i++) {
 			sum = arr[0][i] + arr[1][i] + arr[2][i];
 			if (sum === 3) return 1;
 			else if (sum === -3) return -1;
 		}
+
 		// check first diagonal
 		sum = arr[0][0] + arr[1][1] + arr[2][2];
 		if (sum === 3) return 1;
 		else if (sum === -3) return -1;
+
 		// check second diagonal
 		sum = arr[0][2] + arr[1][1] + arr[2][0];
 		if (sum === 3) return 1;
@@ -105,7 +109,7 @@ export default function App() {
 
 	return (
 		<View style={styles.container}>
-			{playerTurn()}
+			<Text style={styles.heading}>Tic-Tac-Toe</Text>
 			<View style={{ flexDirection: 'row' }}>
 				<TouchableOpacity
 					style={[
@@ -178,20 +182,9 @@ export default function App() {
 					{renderIcon(2, 2)}
 				</TouchableOpacity>
 			</View>
-			<View
-				style={{
-					position: 'absolute',
-					bottom: 40,
-				}}
-			>
-				<Button
-					style={{
-						position: 'absolute',
-						bottom: 0,
-					}}
-					title="New Game"
-					onPress={startGame}
-				></Button>
+			{playerTurn()}
+			<View style={styles.buttonView}>
+				<Button title="New Game" onPress={startGame}></Button>
 			</View>
 		</View>
 	);
@@ -204,9 +197,15 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		backgroundColor: '#fff',
 	},
+	heading: {
+		color: '#000',
+		position: 'absolute',
+		top: 100,
+		fontSize: 30,
+	},
 	tile: {
 		borderWidth: 5,
-		borderColor: '#000',
+		borderColor: '#000000',
 		width: 100,
 		height: 100,
 		alignItems: 'center',
@@ -223,7 +222,11 @@ const styles = StyleSheet.create({
 	playerChance: {
 		color: '#000',
 		position: 'absolute',
-		top: 100,
+		bottom: 150,
 		fontSize: 30,
+	},
+	buttonView: {
+		position: 'absolute',
+		bottom: 40,
 	},
 });
